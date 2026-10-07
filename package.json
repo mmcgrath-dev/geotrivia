@@ -1,0 +1,17 @@
+{
+  "name": "geotrivia",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A daily U.S. trivia game with state and city answers.",
+  "scripts": {
+    "build": "node scripts/build.cjs --write",
+    "test": "node tests/game.test.cjs --bundle",
+    "test:browser": "node tests/layout.test.cjs",
+    "format": "prettier --write src scripts tests package.json README.md",
+    "format:check": "prettier --check src scripts tests package.json README.md"
+  },
+  "devDependencies": {
+    "prettier": "3.9.6",
+    "playwright": "1.62.1"
+  }
+}

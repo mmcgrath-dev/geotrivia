@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#183c38" />
+    <title>GeoTrivia — A little discovery, every day</title>
+    <link rel="stylesheet" href="styles/game.css" />
+  </head>
+  <body>
+    <!-- Home and difficulty selection. -->
+    <main id="home">
+      <header class="row space">
+        <div class="brand">Geo<em>Trivia</em></div>
+        <div class="row home-meta">
+          <span id="current-streak" class="pill"></span
+          ><span class="pill edition">THE U.S. EDITION</span>
+        </div>
+      </header>
+      <section class="hero">
+        <div>
+          <h1>A little discovery.<br /><em class="gold">Every day.</em></h1>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <svg id="hero-map" viewBox="-25 -15 1035 665"></svg>
+        </div>
+      </section>
+      <div class="eyebrow">Choose your adventure</div>
+      <div class="modes">
+        <button class="mode-card" id="mode-easy" aria-pressed="true" data-mode="easy">
+          <span class="difficulty easy">Easy mode</span><strong>Know the state</strong
+          ><small>Sports, history, art & more.<br />Select one state on the map.</small></button
+        ><button class="mode-card" id="mode-hard" aria-pressed="false" data-mode="hard">
+          <span class="difficulty hard">Hard mode</span><strong>Know the city</strong
+          ><small
+            >The same trivia mix, one level deeper.<br />Choose a state, then a labeled city.</small
+          >
+        </button>
+      </div>
+      <div class="home-play">
+        <button class="primary" id="play-daily">Play today's challenge →</button
+        ><button class="textbutton" id="how-button">How to play</button>
+      </div>
+      <p id="home-status" aria-live="polite"></p>
+      <p id="storage-note" role="status" hidden>
+        Saving is unavailable in this browser. You can still play, but progress will last only for
+        this session.
+      </p>
+    </main>
+    <!-- Daily round: clue, map, and answer controls. -->
+    <main id="game" hidden>
+      <header class="game-head row space">
+        <div class="brand">Geo<em>Trivia</em></div>
+        <div class="stats">
+          <div class="stat">Question<strong id="question-count"></strong></div>
+          <div class="stat">Score<strong id="score"></strong></div>
+          <div class="stat">Mode<strong id="game-mode"></strong></div>
+        </div>
+        <div class="row">
+          <button class="secondary" id="quit">Home</button>
+        </div>
+      </header>
+      <div
+        class="progress"
+        role="progressbar"
+        aria-label="Round progress"
+        aria-valuemin="0"
+        aria-valuemax="10"
+        aria-valuenow="0"
+        id="progress"
+      >
+        <span id="progress-fill"></span>
+      </div>
+      <section class="clue-card">
+        <div>
+          <div class="eyebrow" id="question-topic"></div>
+          <h2 id="clue" tabindex="-1"></h2>
+        </div>
+        <span class="pill" id="round-kind"></span>
+      </section>
+      <div class="map-workspace">
+        <div class="map-area">
+          <svg
+            id="map"
+            viewBox="-25 -15 1035 665"
+            role="group"
+            aria-label="Interactive United States map"
+            tabindex="0"
+          ></svg>
+          <div class="map-chrome">
+            <div class="map-caption">
+              <span class="eyebrow" id="map-kicker">Your next discovery</span
+              ><strong id="map-title">United States</strong>
+            </div>
+            <button class="secondary" id="back-states" hidden>← All states</button>
+          </div>
+          <div class="map-key">
+            <span><i class="dot"></i>Your selection</span
+            ><span><i class="dot correct"></i>Correct answer</span>
+          </div>
+          <div class="map-toolbar">
+            <button id="zoom-in" aria-label="Zoom in">+</button
+            ><button id="zoom-out" aria-label="Zoom out">−</button
+            ><button id="zoom-fit" aria-label="Fit current map">Fit</button>
+          </div>
+        </div>
+        <aside class="explorer">
+          <div class="steps" id="steps"></div>
+          <div id="choose-panel">
+            <div class="eyebrow" id="choice-eyebrow">Explore the map</div>
+            <h2 id="choice-title">Which state?</h2>
+            <p id="choice-help"></p>
+            <label class="footnote" for="state-list" id="state-list-label"
+              >Or choose from the list</label
+            ><select id="state-list">
+              <option value="">Select a state…</option>
+            </select>
+            <div class="city-list" id="city-list"></div>
+            <p class="map-hint" id="map-hint"></p>
+          </div>
+          <section class="answer-box" id="answer" aria-live="polite" hidden>
+            <div class="eyebrow" id="answer-verdict"></div>
+            <h3 id="answer-title"></h3>
+            <div class="answer-points" id="answer-points"></div>
+            <p id="answer-explanation"></p>
+            <p id="answer-guess"></p>
+          </section>
+        </aside>
+      </div>
+      <footer class="selection">
+        <div aria-live="polite">
+          <small id="selection-caption">Your selection</small
+          ><strong id="selection-name">Choose a state to begin</strong>
+        </div>
+        <div class="selection-actions">
+          <button class="secondary" id="pause-advance" aria-label="Pause automatic advance" title="Pause automatic advance" hidden>Ⅱ</button>
+          <button class="primary" id="submit" disabled>Confirm state</button>
+        </div>
+      </footer>
+    </main>
+    <!-- Completed round and answer review. -->
+    <main id="results" hidden>
+      <header class="row space">
+        <div class="brand">Geo<em>Trivia</em></div>
+        <button class="secondary" id="result-home">Home</button>
+      </header>
+      <section class="end-hero">
+        <span class="pill" id="result-kind"></span>
+        <h1>A little wiser.<br />A little better traveled.</h1>
+        <div class="end-score" id="final-score"></div>
+        <div class="eyebrow" id="final-max"></div>
+        <p id="result-note"></p>
+      </section>
+      <div class="end-actions"><button class="secondary" id="share">Share result</button></div>
+      <h2>Your field notes</h2>
+      <div id="summary" class="summary-list"></div>
+    </main>
+    <!-- Results sharing and how-to-play dialogs. -->
+    <dialog id="result-dialog" aria-labelledby="share-heading">
+      <button class="dialog-close" id="close-result" aria-label="Close results" title="Close results">×</button>
+      <div class="brand">Geo<em>Trivia</em></div>
+      <p id="share-mode"></p>
+      <h2 id="share-heading">Round complete!</h2>
+      <div class="share-score" id="share-score"></div>
+      <p id="share-perfect"></p>
+      <div id="share-grid" class="share-grid" aria-label="Answers this round"></div>
+      <button class="primary" id="copy-result" autofocus>Copy result</button>
+      <button class="textbutton" id="review-results">Review answers</button>
+      <p id="toast" role="status"></p>
+      <div id="share-fallback" hidden>
+        <label for="share-text">Copy your result</label>
+        <textarea id="share-text" readonly></textarea>
+      </div>
+    </dialog>
+    <dialog id="how">
+      <h2>A map. A clue. A discovery.</h2>
+      <p>
+        <strong>Easy:</strong> Answer sports, geography, history, art, and pop-culture clues by
+        choosing a state for 1,000 points.
+      </p>
+      <p>
+        <strong>Hard:</strong> The same fact collection, with city-level answers. Each day uses
+        different facts from Easy. Choose a state to open its map, then click a labeled city or its
+        matching button. Correct city: 1,000 points. Right state, different city: 250 points.
+        Different state: 0.
+      </p>
+      <p>
+        You can change your choice until you confirm. Correct answers stay visible for two seconds;
+        missed or partially correct answers stay for four. Tap anywhere to continue sooner,
+        or pause to read longer. Map controls support zoom,
+        drag, and arrow keys. Every state and city also has a
+        keyboard-accessible choice.
+      </p>
+      <button class="primary" id="close-how">Let's explore</button>
+    </dialog>
+    <noscript>This game needs JavaScript enabled in your browser.</noscript>
+    <!-- Ordered scripts also define the standalone build order. -->
+    <script src="data/state-shapes.js" defer></script>
+    <script src="data/cities.js" defer></script>
+    <script src="data/place-facts.js" defer></script>
+    <script src="data/culture-facts.js" defer></script>
+    <script src="questions.js" defer></script>
+    <script src="state.js" defer></script>
+    <script src="storage.js" defer></script>
+    <script src="daily.js" defer></script>
+    <script src="screens/home.js" defer></script>
+    <script src="screens/game.js" defer></script>
+    <script src="screens/results.js" defer></script>
+    <script src="maps/projection.js" defer></script>
+    <script src="maps/render.js" defer></script>
+    <script src="maps/navigation.js" defer></script>
+    <script src="main.js" defer></script>
+  </body>
+</html>
